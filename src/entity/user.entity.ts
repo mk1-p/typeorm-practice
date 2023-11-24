@@ -89,7 +89,22 @@ export class UserModel{
   @Generated('increment')
   additionalId: number;
 
-  @OneToOne(() => ProfileModel, (profile) => profile.user)
+  @OneToOne(() => ProfileModel, (profile) => profile.user, {
+    // find() 시 즉시로딩
+    eager: false,
+    // 저장할때 한번에 저장할것인지, Cascade 옵션 설정이 따로 없는지??
+    // 아래 onDelete 에서!
+    cascade: false,
+    // null 을 허용하는지
+    nullable: true,
+    // 관계가 삭제됐을때
+    // no action -> 아무것도 안함
+    // cascade -> 참조하는 Row도 같이 삭제
+    // set null -> 참조하는 Row에서 참조 id를 null로 변경 : 삭제되면 자동으로 외래키가 null이 됨
+    // set default -> 기본 세팅으로 설정 (테이블의 기본 세팅)
+    // restrict -> 참조하고 있는 Row가 있는 경우 참조당하는 Row 삭제 불가
+    onDelete: 'CASCADE',
+  })
   profile: ProfileModel;
 
   @OneToMany(() => PostModel, (post) => post.author)
